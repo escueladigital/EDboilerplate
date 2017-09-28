@@ -1,0 +1,29 @@
+/*
+  This boilerplate is based in ITCSS and SMACSS
+*/
+
+// Config
+@import "config/functions";
+@import "config/variables";
+@import "config/mixins";
+
+// Base and elements (generic)
+@import "base/base";
+
+// LAYOUT
+  // Escribe solo los estilos de layout (division en regiones del viewport)
+@import "layout/layout";
+
+// MODULOS (SMACSS) O COMPONENTES (ITCSS)
+  // Son los elementos de UI de tu interfaz, como botones, tablas, menus, etc.
+  // Crea los archivos adicionales que necesites (uno por componente)
+@import "components/buttons";
+@import "components/menus";
+
+// Theme (colors and fonts)
+@import "theme/typography";
+
+// Utilities (hacks)
+  // Todos los hacks que hayas necesitado para solucionar conflictos
+  // o resolver situaciones extremas. Se espera poder mejorarlos luego.
+@import "hacks/hacks";
