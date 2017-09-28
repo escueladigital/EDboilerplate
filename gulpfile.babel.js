@@ -6,6 +6,7 @@ import browserSync from 'browser-sync';
 import sass from 'gulp-sass';
 import postcss from 'gulp-postcss';
 import cssnano from 'cssnano';
+import watch from 'gulp-watch';
 
 const server = browserSync.create();
 
@@ -55,7 +56,13 @@ gulp.task('default', () => {
     },
   });
 
-  gulp.watch('./dev/scss/**/*.scss', ['styles']);
-  gulp.watch('./dev/js/**/*.js', ['scripts', server.reload]);
-  gulp.watch('./dev/pug/**/*.pug', ['pug', server.reload]);
+  watch('./dev/scss/**/*.scss', () => gulp.start('styles'));
+  watch('./dev/js/**/*.js', () => {
+    gulp.start('scripts');
+    server.reload();
+  });
+  watch('./dev/pug/**/*.js', () => {
+    gulp.start('pug');
+    server.reload();
+  });
 });
