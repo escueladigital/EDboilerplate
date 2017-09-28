@@ -10,7 +10,6 @@ import cssnano from 'cssnano';
 const server = browserSync.create();
 
 let postcssPlugins = [
-  //autoprefixer({browsers: '> 1%, last 2 versions, Firefox ESR, Opera 12.1'}),
   cssnano({
     core: false,
     autoprefixer: {
@@ -26,12 +25,7 @@ let sassOptions = {
 
 gulp.task('styles', () =>
   gulp.src('./dev/scss/styles.scss')
-    .pipe(plumber({
-      errorHandler: function (err) {
-        console.log(err);
-        this.emit('end');
-      }
-    }))
+    .pipe(plumber())
     .pipe(sass(sassOptions))
     .pipe(postcss(postcssPlugins))
     .pipe(plumber.stop())
@@ -41,12 +35,14 @@ gulp.task('styles', () =>
 
 gulp.task('pug', () =>
   gulp.src('./dev/pug/pages/*.pug')
+    .pipe(plumber())
     .pipe(pug())
     .pipe(gulp.dest('./public'))
 );
 
 gulp.task('scripts', () =>
   gulp.src('./dev/js/**/*.js')
+    .pipe(plumber())
     .pipe(babel())
     .pipe(gulp.dest('./public/js'))
 );
