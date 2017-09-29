@@ -11,7 +11,9 @@
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.0",
+    "babelify": "^7.3.0",
     "browser-sync": "^2.18.13",
+    "browserify": "^14.4.0",
     "cssnano": "^3.10.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
@@ -19,6 +21,9 @@
     "gulp-postcss": "^6.4.0",
     "gulp-pug": "^3.3.0",
     "gulp-sass": "^3.1.0",
-    "gulp-watch": "^4.3.11"
+    "gulp-sourcemaps": "^2.6.1",
+    "gulp-watch": "^4.3.11",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
   }
 }
