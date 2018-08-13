@@ -1,0 +1,6 @@
+nav.main-menu(itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation")#main-menu
+  ul
+    each val, key in menu
+      - var target = val === 'https://ed.team' ? '"_blank"' : ''
+      li.main-menu__item(itemprop="url")
+          a.main-menu__link(href=val target=target itemprop="name" title= "Enlace de " + key)= key
