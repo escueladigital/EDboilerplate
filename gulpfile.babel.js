@@ -105,8 +105,8 @@ gulp.task('default', ['styles', 'pug', 'images','scripts'], () => {
     }
   })
 
-  watch('./dev/scss/**/*.scss', () => gulp.start('styles'))
-  watch('./dev/js/**/*.js', () => gulp.start('scripts',server.reload) )
-  watch('./dev/pug/**/*.pug', () => gulp.start('pug', server.reload))
+  watch('./dev/scss/**/**', () => gulp.start('styles'))
+  watch('./dev/js/**/**', () => gulp.start('scripts',server.reload) )
+  watch('./dev/pug/**/**', () => gulp.start('pug', server.reload))
   watch('./dev/img/**', () => gulp.start('images'))
 });
