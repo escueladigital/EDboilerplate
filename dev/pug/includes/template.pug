@@ -1,10 +1,20 @@
+block config
+  include config
 doctype html
 html(lang="es")
   head
     title My awesome title
     meta(charset="utf-8")
     meta(name="viewport" content="initial-scale=1.0, width=device-width")
+    meta(name="twitter:card" content="summary_large_image")
+    meta(name="twitter:site" content=twitterAccount)
+    meta(property="og:title" content=pageTitle)
+    meta(property="og:description" content=pageDescription)
+    meta(property="og:image" content=pageImage)
     link(rel="stylesheet" href="css/styles.css")
+    link(rel="shortcut icon" href="img/favicon.png")
+    
   body
     block main
+
     script(src="js/scripts.js")
