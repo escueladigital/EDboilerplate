@@ -1,4 +1,6 @@
-import {saludo, despedida} from "./modules/example";
+import {saludo, despedida} from "./modules/example"
+import {activeMenu} from './modules/active-menu'
 
-saludo();
-despedida();
+// saludo()
+// despedida()
+activeMenu()
