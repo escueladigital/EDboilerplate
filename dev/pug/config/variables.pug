@@ -1,6 +1,27 @@
--var pageTitle = 'Home'
--var siteName = 'EDboilerplate'
--var twitterAccount = '@edteamlat'
--var pageDescription = 'Simple boilerplate for static web projects with sass, pug and babel'
--var pageImage = ''
--var menu = { 'Inicio': '/', 'Contacto': '/contacto.html'};
+-let pageTitle = 'Home'
+-let siteName = 'EDboilerplate'
+-let twitterAccount = '@edteamlat'
+-let pageDescription = 'Simple boilerplate for static web projects with sass, pug and babel'
+-let pageImage = ''
+-
+  let pages = [
+    {
+      title: 'Home',
+      url: '/',
+      child: []
+    },
+    {
+      title: 'About',
+      url: 'about.html',
+      child: [
+        {
+          title: 'Subitem1',
+          url: 'subitem1.html'
+        },
+        {
+          title: 'Subitem2',
+          url: 'subitem2.html'
+        }
+      ]
+    }
+  ]
