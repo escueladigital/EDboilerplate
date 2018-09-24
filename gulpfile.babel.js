@@ -13,6 +13,7 @@ import sourcemaps from 'gulp-sourcemaps'
 import buffer from 'vinyl-buffer'
 import minify from 'gulp-minify'
 import imagemin from 'gulp-imagemin'
+import sitemap from 'gulp-sitemap'
 
 const server = browserSync.create()
 
@@ -32,16 +33,16 @@ const postcssPlugins = [
   })
 ]
 
-const sassOptions = env == 'dev' ? {
+const sassOptions = env === 'dev' ? {
   includePaths: ['node_modules'],
   sourceComments: true,
   outputStyle: 'expanded'
 } : {
-  includePaths: ['node_modules'],
+  includePaths: ['node_modules']
 }
 
 gulp.task('styles', () => {
-  return env == 'dev' 
+  return env === 'dev'
     ? gulp.src('./dev/scss/styles.scss')
       .pipe(plumber())
       .pipe(sass(sassOptions))
@@ -56,10 +57,11 @@ gulp.task('styles', () => {
 })
 
 gulp.task('pug', () =>
-  gulp.src('./dev/pug/pages/*.pug')
+  gulp.src('./dev/pug/pages/**/*.pug')
     .pipe(plumber())
     .pipe(pug({
-      pretty: !production
+      pretty: !production,
+      basedir: './dev/pug'
     }))
     .pipe(gulp.dest('./public'))
 )
@@ -70,8 +72,8 @@ gulp.task('scripts', () =>
       global: true // permite importar desde afuera (como node_modules)
     })
     .bundle()
-    .on('error', function(err){
-      console.error(err);
+    .on('error', function (err) {
+      console.error(err)
       this.emit('end')
     })
     .pipe(source('scripts.js'))
@@ -82,23 +84,33 @@ gulp.task('scripts', () =>
         min: minJs
       }
     }))
-    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('./public/js'))
 )
 
 gulp.task('images', () => {
-  gulp.src('./dev/img/**')
-   .pipe(imagemin([
-    imagemin.gifsicle({interlaced: true}),
-    imagemin.jpegtran({progressive: true}),
-    imagemin.optipng({optimizationLevel: 5}),
-    imagemin.svgo()
-   ]))
-   .pipe(gulp.dest('./public/img'))
- });
+  gulp.src('./dev/img/**/**')
+    .pipe(imagemin([
+      imagemin.gifsicle({interlaced: true}),
+      imagemin.jpegtran({progressive: true}),
+      imagemin.optipng({optimizationLevel: 5}),
+      imagemin.svgo()
+    ]))
+    .pipe(gulp.dest('./public/assets/img'))
+})
 
-gulp.task('default', ['styles', 'pug', 'images','scripts'], () => {
+gulp.task('sitemap', () => {
+  gulp.src('./public/**/*.html', {
+    read: false
+  })
+    .pipe(sitemap({
+      siteUrl: 'https://example.com' // remplazar por tu dominio
+    }))
+    .pipe(gulp.dest('./public'))
+})
+
+gulp.task('default', ['styles', 'pug', 'images', 'scripts'], () => {
   server.init({
     server: {
       baseDir: './public'
@@ -106,7 +118,7 @@ gulp.task('default', ['styles', 'pug', 'images','scripts'], () => {
   })
 
   watch('./dev/scss/**/**', () => gulp.start('styles'))
-  watch('./dev/js/**/**', () => gulp.start('scripts',server.reload) )
+  watch('./dev/js/**/**', () => gulp.start('scripts', server.reload))
   watch('./dev/pug/**/**', () => gulp.start('pug', server.reload))
-  watch('./dev/img/**', () => gulp.start('images'))
-});
+  watch('./dev/img/**/**', () => gulp.start('images'))
+})
