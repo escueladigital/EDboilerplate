@@ -4,7 +4,11 @@
   "description": "Simple scafolding for statics web projects",
   "main": "gulpfile.babel.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "gulp",
+    "pug": "gulp pug",
+    "scripts": "gulp scripts",
+    "images": "gulp images",
+    "sitemap": "gulp sitemap"
   },
   "author": "Alvaro Felipe",
   "license": "GPL-2.0",
