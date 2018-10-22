@@ -14,13 +14,9 @@ import buffer from 'vinyl-buffer'
 import minify from 'gulp-minify'
 import imagemin from 'gulp-imagemin'
 import sitemap from 'gulp-sitemap'
+import cachebust from 'gulp-cache-bust'
 
 const server = browserSync.create()
-
-const production = false
-const env = production ? 'prod' : 'dev'
-const srcJs = production ? '.js' : '-min.js'
-const minJs = production ? '-min.js' : '.js'
 
 const postcssPlugins = [
   cssnano({
@@ -33,40 +29,61 @@ const postcssPlugins = [
   })
 ]
 
-const sassOptions = env === 'dev' ? {
-  includePaths: ['node_modules'],
-  sourceComments: true,
-  outputStyle: 'expanded'
-} : {
-  includePaths: ['node_modules']
-}
-
-gulp.task('styles', () => {
-  return env === 'dev'
-    ? gulp.src('./dev/scss/styles.scss')
-      .pipe(plumber())
-      .pipe(sass(sassOptions))
-      .pipe(gulp.dest('./public/css/'))
-      .pipe(server.stream({match: '**/*.css'}))
-    : gulp.src('./dev/scss/styles.scss')
-      .pipe(plumber())
-      .pipe(sass(sassOptions))
-      .pipe(postcss(postcssPlugins))
-      .pipe(gulp.dest('./public/css/'))
-      .pipe(server.stream({match: '**/*.css'}))
+gulp.task('styles-dev', () => {
+  gulp.src('./dev/scss/styles.scss')
+    .pipe(plumber())
+    .pipe(sass({
+      includePaths: ['node_modules'],
+      sourceComments: true,
+      outputStyle: 'expanded'
+    }))
+    .pipe(gulp.dest('./public/css/'))
+    .pipe(server.stream({match: '**/*.css'}))
 })
 
-gulp.task('pug', () =>
+gulp.task('styles-build', () => {
+  gulp.src('./dev/scss/styles.scss')
+    .pipe(plumber())
+    .pipe(sass({
+      includePaths: ['node_modules']
+    }))
+    .pipe(postcss(
+      [
+        cssnano({
+          core: true,
+          zindex: false,
+          autoprefixer: {
+            add: true,
+            browsers: '> 1%, last 2 versions, Firefox ESR, Opera 12.1'
+          }
+        })
+      ]
+    ))
+    .pipe(gulp.dest('./public/css/'))
+    .pipe(server.stream({match: '**/*.css'}))
+})
+
+gulp.task('pug-dev', () =>
   gulp.src('./dev/pug/pages/**/*.pug')
     .pipe(plumber())
     .pipe(pug({
-      pretty: !production,
+      pretty: true,
       basedir: './dev/pug'
     }))
     .pipe(gulp.dest('./public'))
 )
 
-gulp.task('scripts', () =>
+gulp.task('pug-build', () =>
+  gulp.src('./dev/pug/pages/**/*.pug')
+    .pipe(plumber())
+    .pipe(pug({
+      pretty: false,
+      basedir: './dev/pug'
+    }))
+    .pipe(gulp.dest('./public'))
+)
+
+gulp.task('scripts-dev', () =>
   browserify('./dev/js/index.js')
     .transform(babelify, {
       global: true // permite importar desde afuera (como node_modules)
@@ -80,8 +97,31 @@ gulp.task('scripts', () =>
     .pipe(buffer())
     .pipe(minify({
       ext: {
-        src: srcJs,
-        min: minJs
+        src: '-min.js',
+        min: '.js'
+      }
+    }))
+    .pipe(sourcemaps.init({loadMaps: true}))
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('./public/js'))
+)
+
+gulp.task('scripts-build', () =>
+  browserify('./dev/js/index.js')
+    .transform(babelify, {
+      global: true // permite importar desde afuera (como node_modules)
+    })
+    .bundle()
+    .on('error', function (err) {
+      console.error(err)
+      this.emit('end')
+    })
+    .pipe(source('scripts.js'))
+    .pipe(buffer())
+    .pipe(minify({
+      ext: {
+        src: '.js',
+        min: '-min.js'
       }
     }))
     .pipe(sourcemaps.init({loadMaps: true}))
@@ -110,15 +150,26 @@ gulp.task('sitemap', () => {
     .pipe(gulp.dest('./public'))
 })
 
-gulp.task('default', ['styles', 'pug', 'images', 'scripts'], () => {
+gulp.task('dev', ['styles-dev', 'pug-dev', 'scripts-dev'], () => {
   server.init({
     server: {
       baseDir: './public'
     }
   })
 
-  watch('./dev/scss/**/**', () => gulp.start('styles'))
-  watch('./dev/js/**/**', () => gulp.start('scripts', server.reload))
-  watch('./dev/pug/**/**', () => gulp.start('pug', server.reload))
-  watch('./dev/img/**/**', () => gulp.start('images'))
+  watch('./dev/scss/**/**', () => gulp.start('styles-dev'))
+  watch('./dev/js/**/**', () => gulp.start('scripts-dev', server.reload))
+  watch('./dev/pug/**/**', () => gulp.start('pug-dev', server.reload))
+  watch('./dev/img/**/**', () => gulp.start('images-dev'))
 })
+
+gulp.task('cache', () => {
+  gulp.src('./public/**/*.html')
+    .pipe(cachebust({
+      type: 'timestamp'
+    }))
+    .pipe(gulp.dest('./public'))
+})
+
+
+gulp.task('build', ['styles-build', 'pug-build', 'scripts-build', 'images', 'cache', 'sitemap'])
