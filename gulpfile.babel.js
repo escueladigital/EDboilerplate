@@ -30,7 +30,7 @@ const postcssPlugins = [
 ]
 
 gulp.task('styles-dev', () => {
-  gulp.src('./dev/scss/styles.scss')
+  gulp.src('./src/scss/styles.scss')
     .pipe(plumber())
     .pipe(sass({
       includePaths: ['node_modules'],
@@ -42,7 +42,7 @@ gulp.task('styles-dev', () => {
 })
 
 gulp.task('styles-build', () => {
-  gulp.src('./dev/scss/styles.scss')
+  gulp.src('./src/scss/styles.scss')
     .pipe(plumber())
     .pipe(sass({
       includePaths: ['node_modules']
@@ -64,7 +64,7 @@ gulp.task('styles-build', () => {
 })
 
 gulp.task('pug-dev', () =>
-  gulp.src('./dev/pug/pages/**/*.pug')
+  gulp.src('./src/pug/pages/**/*.pug')
     .pipe(plumber())
     .pipe(pug({
       pretty: true,
@@ -74,17 +74,16 @@ gulp.task('pug-dev', () =>
 )
 
 gulp.task('pug-build', () =>
-  gulp.src('./dev/pug/pages/**/*.pug')
+  gulp.src('./src/pug/pages/**/*.pug')
     .pipe(plumber())
     .pipe(pug({
-      pretty: false,
       basedir: './dev/pug'
     }))
     .pipe(gulp.dest('./public'))
 )
 
 gulp.task('scripts-dev', () =>
-  browserify('./dev/js/index.js')
+  browserify('./src/js/index.js')
     .transform(babelify, {
       global: true // permite importar desde afuera (como node_modules)
     })
@@ -107,7 +106,7 @@ gulp.task('scripts-dev', () =>
 )
 
 gulp.task('scripts-build', () =>
-  browserify('./dev/js/index.js')
+  browserify('./src/js/index.js')
     .transform(babelify, {
       global: true // permite importar desde afuera (como node_modules)
     })
@@ -129,14 +128,19 @@ gulp.task('scripts-build', () =>
     .pipe(gulp.dest('./public/js'))
 )
 
-gulp.task('images', () => {
-  gulp.src('./dev/img/**/**')
+gulp.task('images-build', () => {
+  gulp.src('./src/img/**/**')
     .pipe(imagemin([
       imagemin.gifsicle({interlaced: true}),
       imagemin.jpegtran({progressive: true}),
       imagemin.optipng({optimizationLevel: 5}),
       imagemin.svgo()
     ]))
+    .pipe(gulp.dest('./public/assets/img'))
+})
+
+gulp.task('images-dev', () => {
+  gulp.src('./src/img/**/**')
     .pipe(gulp.dest('./public/assets/img'))
 })
 
@@ -157,10 +161,10 @@ gulp.task('dev', ['styles-dev', 'pug-dev', 'scripts-dev'], () => {
     }
   })
 
-  watch('./dev/scss/**/**', () => gulp.start('styles-dev'))
-  watch('./dev/js/**/**', () => gulp.start('scripts-dev', server.reload))
-  watch('./dev/pug/**/**', () => gulp.start('pug-dev', server.reload))
-  watch('./dev/img/**/**', () => gulp.start('images-dev'))
+  watch('./src/scss/**/**', () => gulp.start('styles-dev'))
+  watch('./src/js/**/**', () => gulp.start('scripts-dev', server.reload))
+  watch('./src/pug/**/**', () => gulp.start('pug-dev', server.reload))
+  watch('./src/img/**/**', () => gulp.start('images-dev'))
 })
 
 gulp.task('cache', () => {
@@ -172,4 +176,4 @@ gulp.task('cache', () => {
 })
 
 
-gulp.task('build', ['styles-build', 'pug-build', 'scripts-build', 'images', 'cache', 'sitemap'])
+gulp.task('build', ['styles-build', 'pug-build', 'scripts-build', 'images-build', 'cache', 'sitemap'])
