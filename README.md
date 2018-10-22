@@ -2,11 +2,7 @@
 
 # EDboilerplate
 
-Es una sencilla pero muy poderosa estructura para un proyecto web estático.
-Los proyectos estáticos son muy utiles pero detrás de su aparente simplicidad
-hay mucho trabajo tedioso que hacer por detrás: compilar archivos, crear
-el bundle javascript, recargar automáticamente el navegador con los cambios, etc.
-Y para cada proyecto hacer lo mismo una vez y otra vez y otra vez. Frustrante.
+Es una sencilla estructura para un proyecto web estático.
 
 ## Características de EDboilerplate:
 
@@ -21,18 +17,20 @@ Y para cada proyecto hacer lo mismo una vez y otra vez y otra vez. Frustrante.
 * Tiene una estructura lista de estilos (con Sass) basada en SMACSS y ITCSS
 * Tiene una estructura lista para HTML (con Pug) que divide páginas e includes.
 * Tiene una estructura lista para importar y exportar modulos ES6
+* Optimiza y comprime imágenes
 
 ## Modo de uso
 
 1. Clone este repositorio (aun no tiene instalacion por npm o yeoman)
 2. Ejecute `npm install` (asegurese de tener npm actualizado y Nodejs en v6 como minimo)
-3. Ejecute `gulp`
-4. Disfrute
+3. Ejecute `gulp dev` para trabajar e desarrollo
+4. Ejecute `gulp build` para compilar sus archivos para produccion
+5. Disfrute
 
 ## Estructura
 
-1. La carpeta dev contiene la estructura de archivos con la que trabajará
-2. La carpeta public contiene los archivos compilados que deberan llevarse a producción
+1. La carpeta **src** contiene la estructura de archivos con la que trabajará
+2. La carpeta **public** contiene los archivos compilados que deberan llevarse a producción
 3. Para Sass importe sus partials desde `styles.scss`, el orden está indicado en el mismo archivo
 4. Para Pug, la carpeta `pages` contiene las paginas del proyecto y la carpeta `includes` los bloques.
 5. Para Js, la carpeta `modules` contiene los módulos que serán importados desde `index.js`
