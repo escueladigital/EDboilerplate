@@ -15,6 +15,7 @@ import minify from 'gulp-minify'
 import imagemin from 'gulp-imagemin'
 import sitemap from 'gulp-sitemap'
 import cachebust from 'gulp-cache-bust'
+import tildeImporter from 'node-sass-tilde-importer'
 
 const server = browserSync.create()
 
@@ -33,7 +34,7 @@ gulp.task('styles-dev', () => {
   gulp.src('./src/scss/styles.scss')
     .pipe(plumber())
     .pipe(sass({
-      includePaths: ['node_modules'],
+      importer: tildeImporter,
       sourceComments: true,
       outputStyle: 'expanded'
     }))
@@ -45,7 +46,7 @@ gulp.task('styles-build', () => {
   gulp.src('./src/scss/styles.scss')
     .pipe(plumber())
     .pipe(sass({
-      includePaths: ['node_modules']
+      importer: tildeImporter
     }))
     .pipe(postcss(
       [
