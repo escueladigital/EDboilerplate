@@ -155,7 +155,7 @@ gulp.task('sitemap', () => {
     .pipe(gulp.dest('./public'))
 })
 
-gulp.task('dev', ['styles-dev', 'pug-dev', 'scripts-dev'], () => {
+gulp.task('dev', ['styles-dev', 'pug-dev', 'scripts-dev', 'images-dev'], () => {
   server.init({
     server: {
       baseDir: './public'
