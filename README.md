@@ -21,11 +21,12 @@ Es una sencilla estructura para un proyecto web estático.
 
 ## Modo de uso
 
-1. Clone este repositorio (aun no tiene instalacion por npm o yeoman)
-2. Ejecute `npm install` (asegurese de tener npm actualizado y Nodejs en v6 como minimo)
-3. Ejecute `gulp dev` para trabajar e desarrollo
-4. Ejecute `gulp build` para compilar sus archivos para produccion
-5. Disfrute
+1. Cree un fork de este repositorio y clonelo en local (o descargue este repositorio por zip).
+2. Ejecute en terminal `npm install -g gulp-cli`
+3. Ejecute `npm install` (asegurese de tener npm actualizado y Nodejs en v6 como minimo)
+4. Ejecute `gulp dev` para trabajar e desarrollo
+5. Ejecute `gulp build` para compilar sus archivos para produccion
+6. Disfrute
 
 ## Estructura
 
