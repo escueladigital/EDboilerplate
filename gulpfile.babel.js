@@ -32,12 +32,18 @@ const postcssPlugins = [
 
 gulp.task('styles-dev', () => {
   gulp.src('./src/scss/styles.scss')
+    .pipe(sourcemaps.init({ loadMaps : true}))
     .pipe(plumber())
     .pipe(sass({
       importer: tildeImporter,
-      sourceComments: true,
       outputStyle: 'expanded'
     }))
+    .pipe(postcss([
+      autoprefixer({
+        browsers: '> 1%, last 2 versions, Firefox ESR, Opera 12.1'
+      })
+    ]))
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('./public/css/'))
     .pipe(server.stream({match: '**/*.css'}))
 })
@@ -61,7 +67,6 @@ gulp.task('styles-build', () => {
       ]
     ))
     .pipe(gulp.dest('./public/css/'))
-    .pipe(server.stream({match: '**/*.css'}))
 })
 
 gulp.task('pug-dev', () =>
