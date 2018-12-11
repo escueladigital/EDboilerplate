@@ -74,7 +74,7 @@ gulp.task('pug-dev', () =>
     .pipe(plumber())
     .pipe(pug({
       pretty: true,
-      basedir: './dev/pug'
+      basedir: './src/pug'
     }))
     .pipe(gulp.dest('./public'))
 )
@@ -83,7 +83,7 @@ gulp.task('pug-build', () =>
   gulp.src('./src/pug/pages/**/*.pug')
     .pipe(plumber())
     .pipe(pug({
-      basedir: './dev/pug'
+      basedir: './src/pug'
     }))
     .pipe(gulp.dest('./public'))
 )
