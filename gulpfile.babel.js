@@ -36,15 +36,12 @@ gulp.task('styles-dev', () => {
     .pipe(plumber())
     .pipe(sass({
       importer: tildeImporter,
-      outputStyle: 'expanded'
+      outputStyle: 'expanded',
+      includePaths: ['./node_modules']
     }))
-    .pipe(postcss([
-      autoprefixer({
-        browsers: '> 1%, last 2 versions, Firefox ESR, Opera 12.1'
-      })
-    ]))
+    .pipe(postcss(postcssPlugins))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('./public/css/'))
+    .pipe(gulp.dest('./public/assets/css/'))
     .pipe(server.stream({match: '**/*.css'}))
 })
 
@@ -52,7 +49,8 @@ gulp.task('styles-build', () => {
   gulp.src('./src/scss/styles.scss')
     .pipe(plumber())
     .pipe(sass({
-      importer: tildeImporter
+      importer: tildeImporter,
+      includePaths: ['./node_modules']
     }))
     .pipe(postcss(
       [
@@ -66,7 +64,7 @@ gulp.task('styles-build', () => {
         })
       ]
     ))
-    .pipe(gulp.dest('./public/css/'))
+    .pipe(gulp.dest('./public/assets/css/'))
 })
 
 gulp.task('pug-dev', () =>
@@ -108,7 +106,7 @@ gulp.task('scripts-dev', () =>
     }))
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('./public/js'))
+    .pipe(gulp.dest('./public/assets/js'))
 )
 
 gulp.task('scripts-build', () =>
@@ -131,7 +129,7 @@ gulp.task('scripts-build', () =>
     }))
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('./public/js'))
+    .pipe(gulp.dest('./public/assets/js'))
 )
 
 gulp.task('images-build', () => {
