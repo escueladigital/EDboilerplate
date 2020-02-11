@@ -144,7 +144,7 @@ gulp.task('images-build', () => {
   return gulp.src('./src/img/**/**')
     .pipe(imagemin([
       imagemin.gifsicle({interlaced: true}),
-      // imagemin.jpegtran({progressive: true}),
+      imagemin.jpegtran({progressive: true}),
       imagemin.optipng({optimizationLevel: 5}),
       imagemin.svgo()
     ]))
