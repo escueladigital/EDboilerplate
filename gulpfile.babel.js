@@ -19,6 +19,14 @@ import tildeImporter from 'node-sass-tilde-importer'
 
 const server = browserSync.create()
 
+const startServer = () => (
+  server.init({
+    server: {
+      baseDir: './public'
+    }
+  })
+)
+
 const postcssPlugins = [
   cssnano({
     core: true,
@@ -31,7 +39,7 @@ const postcssPlugins = [
 ]
 
 gulp.task('styles-dev', () => {
-  gulp.src('./src/scss/styles.scss')
+  return gulp.src('./src/scss/styles.scss')
     .pipe(sourcemaps.init({ loadMaps : true}))
     .pipe(plumber())
     .pipe(sass({
@@ -46,7 +54,7 @@ gulp.task('styles-dev', () => {
 })
 
 gulp.task('styles-build', () => {
-  gulp.src('./src/scss/styles.scss')
+  return gulp.src('./src/scss/styles.scss')
     .pipe(plumber())
     .pipe(sass({
       importer: tildeImporter,
@@ -67,7 +75,7 @@ gulp.task('styles-build', () => {
     .pipe(gulp.dest('./public/assets/css/'))
 })
 
-gulp.task('pug-dev', () =>
+gulp.task('pug-dev', () => (
   gulp.src('./src/pug/pages/**/*.pug')
     .pipe(plumber())
     .pipe(pug({
@@ -75,18 +83,18 @@ gulp.task('pug-dev', () =>
       basedir: './src/pug'
     }))
     .pipe(gulp.dest('./public'))
-)
+))
 
-gulp.task('pug-build', () =>
+gulp.task('pug-build', () => (
   gulp.src('./src/pug/pages/**/*.pug')
     .pipe(plumber())
     .pipe(pug({
       basedir: './src/pug'
     }))
     .pipe(gulp.dest('./public'))
-)
+))
 
-gulp.task('scripts-dev', () =>
+gulp.task('scripts-dev', () => (
   browserify('./src/js/index.js')
     .transform(babelify, {
       global: true // permite importar desde afuera (como node_modules)
@@ -107,9 +115,9 @@ gulp.task('scripts-dev', () =>
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('./public/assets/js'))
-)
+))
 
-gulp.task('scripts-build', () =>
+gulp.task('scripts-build', () => (
   browserify('./src/js/index.js')
     .transform(babelify, {
       global: true // permite importar desde afuera (como node_modules)
@@ -130,13 +138,13 @@ gulp.task('scripts-build', () =>
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('./public/assets/js'))
-)
+))
 
 gulp.task('images-build', () => {
-  gulp.src('./src/img/**/**')
+  return gulp.src('./src/img/**/**')
     .pipe(imagemin([
       imagemin.gifsicle({interlaced: true}),
-      imagemin.jpegtran({progressive: true}),
+      // imagemin.jpegtran({progressive: true}),
       imagemin.optipng({optimizationLevel: 5}),
       imagemin.svgo()
     ]))
@@ -144,12 +152,12 @@ gulp.task('images-build', () => {
 })
 
 gulp.task('images-dev', () => {
-  gulp.src('./src/img/**/**')
+  return gulp.src('./src/img/**/**')
     .pipe(gulp.dest('./public/assets/img'))
 })
 
 gulp.task('sitemap', () => {
-  gulp.src('./public/**/*.html', {
+  return gulp.src('./public/**/*.html', {
     read: false
   })
     .pipe(sitemap({
@@ -158,21 +166,18 @@ gulp.task('sitemap', () => {
     .pipe(gulp.dest('./public'))
 })
 
-gulp.task('dev', ['styles-dev', 'pug-dev', 'scripts-dev', 'images-dev'], () => {
-  server.init({
-    server: {
-      baseDir: './public'
-    }
-  })
+gulp.task('dev', gulp.parallel(startServer, gulp.series(['styles-dev', 'pug-dev', 'scripts-dev', 'images-dev'])), () => {
 
-  watch('./src/scss/**/**', () => gulp.start('styles-dev'))
-  watch('./src/js/**/**', () => gulp.start('scripts-dev', server.reload))
-  watch('./src/pug/**/**', () => gulp.start('pug-dev', server.reload))
-  watch('./src/img/**/**', () => gulp.start('images-dev'))
+  watch('./src/scss/**/**', () => gulp.series('styles-dev'))
+  watch('./src/js/**/**', () => gulp.series('scripts-dev', server.reload))
+  watch('./src/pug/**/**', () => gulp.series('pug-dev', server.reload))
+  watch('./src/img/**/**', () => gulp.series('images-dev'))
+
+  return
 })
 
 gulp.task('cache', () => {
-  gulp.src('./public/**/*.html')
+  return gulp.src('./public/**/*.html')
     .pipe(cachebust({
       type: 'timestamp'
     }))
@@ -180,4 +185,4 @@ gulp.task('cache', () => {
 })
 
 
-gulp.task('build', ['styles-build', 'pug-build', 'scripts-build', 'images-build', 'cache', 'sitemap'])
+gulp.task('build', gulp.series(gulp.parallel(['styles-build', 'pug-build', 'scripts-build', 'images-build', 'cache', 'sitemap'])))
